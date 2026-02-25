@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queen Christine Delights - Admin & Customer</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Poppins&display=swap');
+
+/* Page Fade In */
+body {
+    animation: fadeInPage 1s ease-in-out;
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#FFF9F4;
+    color:#4B3A2D;
+}
+@keyframes fadeInPage{
+from{opacity:0;} to{opacity:1;}
+}
+
+/* Header */
+header{
+background:#FFC1CC;
+padding:20px;
+text-align:center;
+font-family:'Baloo 2',cursive;
+font-size:32px;
+color:white;
+text-shadow:2px 2px 4px #8B5E3C;
+}
+
+/* Hero */
+.hero{
+background-image:url(ice.jpeg );
+background-size:cover;
+background-position:center;
+height:320px;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+font-size:32px;
+text-shadow:3px 3px 6px #8B5E3C;
+text-align:center;
+padding:20px;
+}
+
+/* Section Title */
+.section-title{
+text-align:center;
+margin-top:40px;
+font-size:28px;
+color:#8B5E3C;
+font-family:'Baloo 2',cursive;
+}
+
+/* Menu */
+.menu{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:25px;
+max-width:1100px;
+margin:40px auto;
+padding:0 20px;
+}
+
+/* Product Card */
+.menu-item{
+background:white;
+border-radius:20px;
+padding:20px;
+text-align:center;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+width:250px;
+transition:all 0.3s ease;
+border:2px solid transparent;
+}
+.menu-item:hover{
+transform:translateY(-8px);
+box-shadow:0 15px 30px rgba(0,0,0,0.15);
+border:2px solid #FFC1CC;
+}.menu-item img{
+width:180px;
+height:180px;
+object-fit:cover;
+border-radius:15px;
+margin-bottom:10px;
+display:block;
+margin:auto;
+}
+.menu-item p{
+font-weight:bold;
+}
+
+/* Ice Cream Drip Animation */
+.icecream-wrapper{
+position:relative;
+display:inline-block;
+}
+.drip{
+position:absolute;
+bottom:-10px;
+left:50%;
+width:8px;
+height:15px;
+background:#fff;
+border-radius:50%;
+transform:translateX(-50%);
+animation:dripAnim 1.2s infinite ease-in-out;
+}
+@keyframes dripAnim{
+0%{transform:translateX(-50%) translateY(0) scaleY(1);opacity:0.7;}
+50%{transform:translateX(-50%) translateY(8px) scaleY(1.2);opacity:1;}
+100%{transform:translateX(-50%) translateY(0) scaleY(1);opacity:0.7;}
+}
+.icecream-wrapper .drip:nth-child(2){left:30%; animation-delay:0.3s;}
+.icecream-wrapper .drip:nth-child(3){left:70%; animation-delay:0.6s;}
+
+/* Quantity */
+.qty{
+width:60px;
+padding:5px;
+margin:10px 0;
+}
+
+/* Neon Button */
+.order-btn{
+padding:12px 25px;
+background:#BFFFC2;
+color:#4B3A2D;
+font-weight:bold;
+border:none;
+border-radius:12px;
+cursor:pointer;
+box-shadow:0 0 10px #BFFFC2,0 0 20px #BFFFC2;
+animation:neonGlow 1.5s infinite alternate;
+transition: all 0.2s ease;
+}
+.order-btn:hover{
+background:#A1E5B1;
+box-shadow:0 0 20px #A1E5B1,0 0 40px #A1E5B1;
+}
+.order-btn:active{
+transform:scale(0.95);
+}
+@keyframes neonGlow{
+0%{box-shadow:0 0 5px #BFFFC2;}
+50%{box-shadow:0 0 20px #BFFFC2;}
+100%{box-shadow:0 0 5px #BFFFC2;}
+}
+
+/* Cart */
+.cart-section{
+max-width:900px;
+margin:40px auto;
+padding:20px;
+text-align:center;
+background:#FFE8EE;
+border-radius:20px;
+}
+
+/* MPESA */
+.mpesa-section{
+max-width:900px;
+margin:40px auto;
+padding:25px;
+background:#E8FFF1;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+.mpesa-section h2{
+color:#0F9D58;
+font-family:'Baloo 2',cursive;
+}
+.mpesa-section ol{
+text-align:left;
+display:inline-block;
+margin-top:10px;
+}
+
+/* Footer */
+footer{
+background:#FFC1CC;
+text-align:center;
+padding:20px;
+font-weight:bold;
+color:white;
+margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+Queen Christine Delights 🍦
+</header>
+
+<section class="hero">
+Sweeten Your Day with Our Ice Creams!
+</section>
+
+<h2 class="section-title">Our Products</h2>
+
+<section class="menu">
+<div class="menu-item icecream-wrapper">
+
+<img src="popsicle.png">
+
+<h3>Popsicles</h3>
+
+<select class="popsicleType">
+<option value="retail">Retail (1 Popsicle - KSh 10)</option>
+<option value="wholesale">Wholesale (1 Popsicle - KSh 4)</option>
+</select>
+
+<input type="number" class="qty" value="1" min="1">
+
+<button class="order-btn" onclick="addPopsicleToCart(this)">
+
+Add to Cart
+</button>
+
+</div>
+<div class="menu-item icecream-wrapper">
+
+<img src="icepop.png">
+
+<h3>Ice Pops</h3>
+
+<select class="icepopType">
+<option value="retail">Retail (1 Ice Pop - KSh 10)</option>
+<option value="carton">Carton of 60 (KSh 500)</option>
+</select>
+<input type="number" class="qty" value="1" min="1">
+<button class="order-btn" onclick="addIcePopToCart(this)">
+Add to Cart
+</button>
+</div>
+
+<div class="menu-item icecream-wrapper">
+<img src="creams.jpeg">
+<h3>Creams 4.5L</h3>
+<p>KSh <span class="price">750</span></p>
+<input type="number" class="qty" value="1" min="1">
+<button class="order-btn" onclick="addToCart(this)">Add to Cart</button>
+<div class="drip"></div>
+<div class="drip"></div>
+<div class="drip"></div>
+</div>
+
+<div class="menu-item icecream-wrapper">
+<img src="corns.jpeg">
+<h3>Corn</h3>
+<p>KSh <span class="price">200</span></p>
+<input type="number" class="qty" value="1" min="1">
+<button class="order-btn" onclick="addToCart(this)">Add to Cart</button>
+<div class="drip"></div>
+<div class="drip"></div>
+<div class="drip"></div>
+</div>
+</section>
+
+<section class="cart-section">
+<label>
+Full Name:<br>
+<input type="text" id="customerName" placeholder="Enter full name" required>
+</label>
+<br><br>
+
+<label>
+Phone Number:<br>
+<input type="text" id="customerPhone" placeholder="07XXXXXXXX" required>
+</label>
+<br><br>
+
+<label>
+ID Number:<br>
+<input type="text" id="customerID" placeholder="Enter ID number" required>
+</label>
+<br><br>
+
+<label>
+Location:<br>
+<input type="text" id="customerLocation" placeholder="Delivery location">
+</label>
+<br><br>
+
+<label>Payment Method:<br>
+<select id="paymentMethod" onchange="toggleCashInput()">
+<option value="Cash">Cash</option>
+<option value="M-Pesa">M-Pesa</option>
+</select></label><br><br>
+
+<div id="cashInputDiv">
+<label>Amount Given (Cash):<br>
+<input type="number" id="amountGiven" placeholder="Enter amount given" oninput="calculateChange()">
+</label><br>
+<p id="cashInfo">Change/Remaining: KSh 0</p>
+</div>
+
+<div id="cartItems"></div>
+<h3>Total: KSh <span id="cartTotal">0</span></h3>
+<button class="order-btn" onclick="sendOrder()">Order via WhatsApp</button>
+
+</section>
+
+<section class="mpesa-section">
+<h2>💳 M-Pesa Payment Instructions</h2>
+<p>Please follow these steps to complete your order:</p>
+<ol>
+<li>Open <b>M-Pesa</b></li>
+<li>Select <b>Lipa na M-Pesa</b></li>
+<li>Select <b>Buy Goods and Services</b></li>
+<li>Enter Till Number: <b>6531070</b></li>
+<li>Enter the amount shown in your cart</li>
+<li>Enter your PIN and confirm</li>
+</ol>
+<p>After payment, click <b>"Order via WhatsApp"</b> and include your <b>M-Pesa transaction code</b>.</p>
+</section>
+
+<footer>
+Contact us: 0703418644 | Instagram & WhatsApp
+</footer>
+<script>
+
+let cart=[];
+function addPopsicleToCart(button){
+
+const item = button.closest('.menu-item');
+
+const type = item.querySelector('.popsicleType').value;
+
+const qty = parseInt(item.querySelector('.qty').value);
+
+let name="";
+let price=0;
+
+if(type === "retail"){
+name="Popsicle (Retail)";
+price=10;
+}
+
+if(type === "wholesale"){
+name="Popsicle (Wholesale)";
+price=4;
+}
+
+const existing = cart.find(p=>p.name===name);
+
+if(existing){
+existing.qty += qty;
+}else{
+cart.push({name,price,qty});
+}
+
+updateCart();
+
+}
+function addToCart(button){
+const item=button.closest('.menu-item');
+const name=item.querySelector('h3').innerText;
+const price=parseInt(item.querySelector('.price').innerText);
+const qty=parseInt(item.querySelector('.qty').value);
+if(qty<=0){alert("Select quantity"); return;}
+const existing=cart.find(p=>p.name===name);
+if(existing){existing.qty+=qty;}else{cart.push({name,price,qty});}
+item.querySelector('.qty').value=1;
+updateCart();
+}
+function addIcePopToCart(button){
+
+const item = button.closest('.menu-item');
+
+const type = item.querySelector('.icepopType').value;
+
+const qty = parseInt(item.querySelector('.qty').value);
+
+let name="";
+let price=0;
+
+if(type === "retail"){
+name="Ice Pop (Retail)";
+price=10;
+}
+
+if(type === "carton"){
+name="Ice Pops (Carton of 60)";
+price=500;
+}
+
+const existing = cart.find(p=>p.name===name);
+
+if(existing){
+existing.qty += qty;
+}else{
+cart.push({name,price,qty});
+}
+
+updateCart();
+
+}
+function updateCart(){
+const cartDiv=document.getElementById("cartItems");
+const totalSpan=document.getElementById("cartTotal");
+cartDiv.innerHTML="";
+let total=0;
+cart.forEach((item,index)=>{
+const itemTotal=item.price*item.qty;
+total+=itemTotal;
+cartDiv.innerHTML+=`<p>${item.name} × ${item.qty} = KSh ${itemTotal} <button onclick="removeItem(${index})">❌</button></p>`;
+});
+totalSpan.innerText=total;
+calculateChange();
+}
+function removeItem(index){
+cart.splice(index,1);
+updateCart();
+}
+function toggleCashInput(){
+const method=document.getElementById("paymentMethod").value;
+const div=document.getElementById("cashInputDiv");
+if(method==="Cash"){div.style.display="block";}
+else{div.style.display="none"; document.getElementById("cashInfo").innerText="";}
+}
+function calculateChange(){
+const total=parseInt(document.getElementById("cartTotal").innerText)||0;
+const given=parseInt(document.getElementById("amountGiven").value)||0;
+let info="";
+if(given>=total){info="Change: KSh "+(given-total);}
+else{info="Remaining Debt: KSh "+(total-given);}
+document.getElementById("cashInfo").innerText=info;
+}
+function sendOrder(){
+
+if(cart.length===0){
+alert("Cart empty");
+return;
+}
+
+const name=document.getElementById("customerName").value.trim();
+const phoneInput=document.getElementById("customerPhone").value.trim();
+const id=document.getElementById("customerID").value.trim();
+const location=document.getElementById("customerLocation").value.trim();
+const total=document.getElementById("cartTotal").innerText;
+
+if(name==="" || phoneInput==="" || id===""){
+alert("Please fill all required details");
+return;
+}
+// AUTO STOCK DEDUCTION
+
+let stock = JSON.parse(localStorage.getItem("stock")) || {};
+
+cart.forEach(item=>{
+if(item.name === "Popsicle (Retail)" || item.name === "Popsicle (Wholesale)"){
+stock.stockPopsicle -= item.qty;
+}
+if(item.name === "Ice Pop (Retail)"){
+stock.stockIcepop -= item.qty;
+}
+
+if(item.name === "Ice Pops (Carton of 60)"){
+stock.stockIcepop -= item.qty * 60;
+}
+if(item.name === "Creams 4.5L"){
+stock.stockIcecream -= item.qty;
+}
+
+if(item.name === "Corn"){
+stock.stockCorns -= item.qty;
+}
+});
+
+localStorage.setItem("stock", JSON.stringify(stock));
+/* ==========================
+   SAVE ORDER AUTOMATICALLY
+========================== */
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let orderDetails = [];
+
+cart.forEach(item=>{
+orderDetails.push({
+name:item.name,
+qty:item.qty,
+price:item.price,
+subtotal:item.price*item.qty
+});
+});
+
+let newOrder = {
+customerName:name,
+phone:phoneInput,
+idNumber:id,
+location:location,
+items:orderDetails,
+total:total,
+date:new Date().toLocaleString()
+};
+
+orders.push(newOrder);
+
+localStorage.setItem("orders", JSON.stringify(orders));
+
+/* ==========================
+   WHATSAPP MESSAGE
+========================== */
+
+const phone="254703418644";
+
+let message="Hello Queen Christine Delights!%0A%0A";
+message+="Customer: "+name+"%0A";
+message+="Phone: "+phoneInput+"%0A";
+message+="ID: "+id+"%0A";
+message+="Location: "+location+"%0A%0A";
+
+message+="Order:%0A";
+
+cart.forEach(item=>{
+message+=item.name+" x "+item.qty+" = KSh "+(item.price*item.qty)+"%0A";
+});
+
+message+="%0ATotal: KSh "+total;
+
+window.open("https://wa.me/"+phone+"?text="+message,"_blank");
+
+/* Clear cart after order */
+cart=[];
+updateCart();
+alert("Order saved successfully 👑");
+}
+
+/* LOAD PRODUCTS FROM ADMIN */
+function loadProducts(){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let menu = document.querySelector(".menu");
+
+products.forEach(product=>{
+
+let card = document.createElement("div");
+
+card.className = "menu-item";
+
+card.innerHTML = `
+
+<img src="${product.image}">
+
+<h3>${product.name}</h3>
+
+<p>KSh <span class="price">${product.price}</span></p>
+
+<input type="number" class="qty" value="1" min="1">
+
+<button class="order-btn" onclick="addToCart(this)">Add to Cart</button>
+
+`;
+
+menu.appendChild(card);
+
+});
+
+}
+
+loadProducts();
+
+</script>
+
+</body>
+</html>

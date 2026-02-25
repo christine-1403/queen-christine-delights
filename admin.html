@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Queen Christine Delights - Admin</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#FFF5F7;
+padding:40px;
+}
+
+h1{
+color:#D2691E;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid #ccc;
+padding:10px;
+text-align:left;
+}
+
+th{
+background:#FFC1CC;
+color:white;
+}
+
+button{
+padding:10px 20px;
+background:#BFFFC2;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>👑 Queen Christine Delights - Admin Dashboard</h1>
+<!-- ADMIN DASHBOARD -->
+<div id="adminDashboard" style="display:block;">
+
+<h2>👑 Admin Dashboard</h2>
+<hr>
+
+<hr>
+
+<h3>➕ Add New Product</h3>
+
+<input type="text" id="productName" placeholder="Product Name">
+
+<input type="number" id="productPrice" placeholder="Price">
+
+<input type="number" id="productStock" placeholder="Stock">
+
+<input type="file" id="productImage">
+
+<button onclick="addProduct()">Add Product</button>
+
+
+<hr><!-- SALES CALCULATOR -->
+<h3>💰 Today's Revenue</h3>
+<p>Total Sales Today: <span id="todaySales">KSh 0</span></p>
+
+<hr>
+
+<!-- STOCK TRACKER -->
+<h3>📦 Stock Tracker</h3>
+
+<table border="1" style="width:100%; text-align:center;" id="productsTable">
+<tr>
+<th>Image</th>
+<th>Product</th>
+<th>Price</th>
+<th>Stock</th>
+<th>Actions</th>
+</tr>
+
+<tr>
+<td><img src="popsicle.png" width="40"></td>
+<td>Popsicle</td>
+<td id="stockPopsicle">50</td>
+<td><button onclick="updateStock('stockPopsicle')">Edit</button></td>
+</tr>
+
+<tr> 
+<td><img src="creams.jpeg" width="40"></td> <td>Ice Cream</td> <td id="stockIcecream">40</td> <td><button onclick="updateStock('stockIcecream')">Edit</button></td> 
+</tr>
+
+<tr>
+<td><img src="icepop.png" width="40"></td>
+<td>Ice Pop</td>
+<td id="stockIcepop">60</td>
+<td><button onclick="updateStock('stockIcepop')">Edit</button></td>
+</tr>
+
+<tr>
+<td><img src="corns.jpeg" width="40"></td>
+<td>Corns</td>
+<td id="stockCorns">40</td>
+<td><button onclick="updateStock('stockCorns')">Edit</button></td>
+</tr>
+
+</table>
+
+<hr>
+
+<!-- ORDER DATABASE -->
+<h3>📋 Customer Orders</h3>
+
+<table border="1" style="width:100%; text-align:center;" id="ordersTable">
+
+<tr>
+<th>Name</th>
+<th>ID</th>
+<th>Phone</th>
+<th>Order</th>
+<th>Total</th>
+</tr>
+
+</table>
+
+<hr>
+
+<!-- SALES CHART -->
+<h3>📊 Sales Chart</h3>
+
+<canvas id="salesChart" width="400" height="200"></canvas>
+
+</div>
+
+<script>
+
+function exportToExcel(){
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let csv = "Name,Phone,ID,Order,Total,Date\n";
+
+orders.forEach(o=>{
+csv += `${o.name},${o.phone},${o.id},${o.order},${o.total},${o.date}\n`;
+});
+
+let blob = new Blob([csv],{type:'text/csv'});
+
+let a = document.createElement("a");
+
+a.href = URL.createObjectURL(blob);
+
+a.download = "orders.csv";
+
+a.click();
+
+}
+// SALES CALCULATOR
+
+// INITIAL STOCK SETUP
+if(!localStorage.getItem("stock")){
+let initialStock = {
+stockPopsicle:50,
+stockIcecream:40,
+stockIcepop:60
+};
+
+localStorage.setItem("stock", JSON.stringify(initialStock));
+}
+function updateStock(stockId){
+
+let stock = JSON.parse(localStorage.getItem("stock")) || {};
+
+let newStock = prompt("Enter new stock amount:");
+
+if(newStock){
+
+stock[stockId] = parseInt(newStock);
+
+localStorage.setItem("stock", JSON.stringify(stock));
+
+document.getElementById(stockId).innerText = newStock;
+
+}
+
+}
+function loadStock(){
+
+let stock = JSON.parse(localStorage.getItem("stock")) || {};
+
+if(stock.stockPopsicle){
+document.getElementById("stockPopsicle").innerText = stock.stockPopsicle;
+}
+
+if(stock.stockIcecream){
+document.getElementById("stockIcecream").innerText = stock.stockIcecream;
+}
+
+if(stock.stockIcepop){
+document.getElementById("stockIcepop").innerText = stock.stockIcepop;
+}
+if(stock.stockCorns){
+document.getElementById("stockCorns").innerText = stock.stockCorns;
+}
+
+}
+
+function calculateSales(){
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let total = 0;
+
+orders.forEach(order=>{
+total += Number(order.total);
+});
+
+document.getElementById("todaySales").innerText = "KSh " + total;
+
+}
+
+// STOCK EDITOR
+function loadStock(){
+
+let stock = JSON.parse(localStorage.getItem("stock")) || {};
+
+if(stock.stockPopsicle){
+document.getElementById("stockPopsicle").innerText = stock.stockPopsicle;
+}
+
+if(stock.stockIcecream){
+document.getElementById("stockIcecream").innerText = stock.stockIcecream;
+}
+
+if(stock.stockIcepop){
+document.getElementById("stockIcepop").innerText = stock.stockIcepop;
+}
+if(stock.stockCorns){
+document.getElementById("stockCorns").innerText = stock.stockCorns;
+}
+
+}
+
+loadStock();
+// LOAD ORDERS
+function loadOrders(){
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+let table = document.getElementById("ordersTable");
+
+orders.forEach(order=>{
+
+let products = "";
+
+order.items.forEach(item=>{
+products += item.name + " x " + item.qty + " | ";
+});
+
+let row = table.insertRow();
+
+row.insertCell(0).innerText = order.customerName;
+row.insertCell(1).innerText = order.idNumber;
+row.insertCell(2).innerText = order.phone;
+row.insertCell(3).innerText = products;
+row.insertCell(4).innerText = "KSh " + order.total;
+
+});
+
+}
+function addNewProduct(){
+
+let name = document.getElementById("newProductName").value;
+let stock = document.getElementById("newProductStock").value;
+let imageInput = document.getElementById("newProductImage");
+
+if(name=="" || stock==""){
+alert("Fill all fields");
+return;
+}
+
+let reader = new FileReader();
+
+reader.onload = function(){
+
+let image = reader.result;
+
+let table = document.querySelector("table");
+
+let newRow = table.insertRow();
+
+let cell1 = newRow.insertCell(0);
+let cell2 = newRow.insertCell(1);
+let cell3 = newRow.insertCell(2);
+let cell4 = newRow.insertCell(3);
+
+cell1.innerHTML = `<img src="${image}" width="40">`;
+cell2.innerText = name;
+cell3.innerText = stock;
+cell4.innerHTML = `<button onclick="editDynamicStock(this)">Edit</button>`;
+
+};
+
+reader.readAsDataURL(imageInput.files[0]);
+
+}
+function editDynamicStock(button){
+
+let row = button.parentElement.parentElement;
+
+let stockCell = row.cells[2];
+
+let newStock = prompt("Enter new stock");
+
+if(newStock){
+stockCell.innerText = newStock;
+}
+
+}
+function addProduct(){
+
+let name = document.getElementById("productName").value;
+let price = document.getElementById("productPrice").value;
+let stock = document.getElementById("productStock").value;
+let imageInput = document.getElementById("productImage");
+
+if(name==="" || price==="" || stock===""){
+alert("Please fill all fields");
+return;
+}
+
+let reader = new FileReader();
+
+reader.onload = function(){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let newProduct = {
+name:name,
+price:price,
+stock:stock,
+image:reader.result
+};
+
+products.push(newProduct);
+
+localStorage.setItem("products", JSON.stringify(products));
+
+alert("Product Added Successfully 👑");
+
+location.reload();
+
+};
+
+reader.readAsDataURL(imageInput.files[0]);
+
+}
+function loadProducts(){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let table = document.getElementById("productsTable");
+
+products.forEach((product,index)=>{
+
+let row = table.insertRow();
+
+let table = document.getElementById("productsTable");
+});
+
+}
+function editProductStock(index){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let newStock = prompt("Enter new stock");
+
+if(newStock){
+
+products[index].stock = newStock;
+
+localStorage.setItem("products", JSON.stringify(products));
+
+location.reload();
+
+}
+
+}
+function loadProductsAdmin(){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let table = document.getElementById("productsTable");
+
+products.forEach((product,index)=>{
+
+let row = table.insertRow();
+
+let cell1 = row.insertCell(0);
+let cell2 = row.insertCell(1);
+let cell3 = row.insertCell(2);
+let cell4 = row.insertCell(3);
+let cell5 = row.insertCell(4);
+
+cell1.innerHTML = `<img src="${product.image}" width="40">`;
+cell2.innerText = product.name;
+cell3.innerText = "KSh " + product.price;
+cell4.innerText = product.stock;
+
+cell5.innerHTML = `
+<button onclick="editProduct(${index})">✏ Edit</button>
+<button onclick="deleteProduct(${index})">🗑 Delete</button>
+`;
+
+});
+
+}
+function deleteProduct(index){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+if(confirm("Delete this product?")){
+
+products.splice(index,1);
+
+localStorage.setItem("products", JSON.stringify(products));
+
+alert("Product Deleted");
+
+location.reload();
+
+}
+
+}
+calculateSales();
+loadStock();
+loadOrders();
+loadProductsAdmin();
+</script>
+
+</body>
+</html>
