@@ -60,14 +60,15 @@ font-weight:bold;
 
 <input type="text" id="productName" placeholder="Product Name">
 
-<input type="number" id="productPrice" placeholder="Price">
+<input type="number" id="productRetailPrice" placeholder="Retail Price">
+
+<input type="number" id="productWholesalePrice" placeholder="Wholesale Price">
 
 <input type="number" id="productStock" placeholder="Stock">
 
 <input type="file" id="productImage">
 
 <button onclick="addProduct()">Add Product</button>
-
 
 <hr><!-- SALES CALCULATOR -->
 <h3>💰 Today's Revenue</h3>
@@ -82,10 +83,10 @@ font-weight:bold;
 <tr>
 <th>Image</th>
 <th>Product</th>
-<th>Price</th>
+<th>Retail Price</th>
+<th>Wholesale Price</th>
 <th>Stock</th>
-<th>Actions</th>
-</tr>
+<th>Actions</th></tr>
 
 <tr>
 <td><img src="popsicle.png" width="40"></td>
@@ -325,57 +326,27 @@ stockCell.innerText = newStock;
 }
 
 }
-function addProduct(){
+function addProduct() {
+    let name = document.getElementById("productName").value;
+    let retail = document.getElementById("retailPrice").value;
+    let wholesale = document.getElementById("wholesalePrice").value;
 
-let name = document.getElementById("productName").value;
-let price = document.getElementById("productPrice").value;
-let stock = document.getElementById("productStock").value;
-let imageInput = document.getElementById("productImage");
+    if(name === "" || retail === "" || wholesale === ""){
+        alert("Please fill all fields");
+        return;
+    }
 
-if(name==="" || price==="" || stock===""){
-alert("Please fill all fields");
-return;
-}
-
-let reader = new FileReader();
-
-reader.onload = function(){
-
-let products = JSON.parse(localStorage.getItem("products")) || [];
-
-let newProduct = {
-name:name,
-price:price,
-stock:stock,
-image:reader.result
-};
-
-products.push(newProduct);
-
-localStorage.setItem("products", JSON.stringify(products));
-
-alert("Product Added Successfully 👑");
-
-location.reload();
-
-};
-
-reader.readAsDataURL(imageInput.files[0]);
-
-}
-function loadProducts(){
-
-let products = JSON.parse(localStorage.getItem("products")) || [];
-
-let table = document.getElementById("productsTable");
-
-products.forEach((product,index)=>{
-
-let row = table.insertRow();
-
-let table = document.getElementById("productsTable");
-});
-
+    db.collection("products").add({
+        name: name,
+        retail: retail,
+        wholesale: wholesale
+    })
+    .then(() => {
+        alert("Product Added Successfully");
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
 }
 function editProductStock(index){
 
@@ -404,20 +375,16 @@ products.forEach((product,index)=>{
 
 let row = table.insertRow();
 
-let cell1 = row.insertCell(0);
-let cell2 = row.insertCell(1);
-let cell3 = row.insertCell(2);
-let cell4 = row.insertCell(3);
-let cell5 = row.insertCell(4);
-
-cell1.innerHTML = `<img src="${product.image}" width="40">`;
-cell2.innerText = product.name;
-cell3.innerText = "KSh " + product.price;
-cell4.innerText = product.stock;
-
-cell5.innerHTML = `
+row.innerHTML = `
+<td><img src="${product.image}" width="40"></td>
+<td>${product.name}</td>
+<td>KSh ${product.retailPrice}</td>
+<td>KSh ${product.wholesalePrice}</td>
+<td>${product.stock}</td>
+<td>
 <button onclick="editProduct(${index})">✏ Edit</button>
 <button onclick="deleteProduct(${index})">🗑 Delete</button>
+</td>
 `;
 
 });
@@ -440,11 +407,55 @@ location.reload();
 }
 
 }
+function editProduct(index){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let product = products[index];
+
+let newName = prompt("Enter product name:", product.name);
+let newRetail = prompt("Enter RETAIL price:", product.retailPrice);
+let newWholesale = prompt("Enter WHOLESALE price:", product.wholesalePrice);
+let newStock = prompt("Enter new stock:", product.stock);
+
+if(newName && newRetail && newWholesale && newStock){
+
+products[index].name = newName;
+products[index].retailPrice = parseInt(newRetail);
+products[index].wholesalePrice = parseInt(newWholesale);
+products[index].stock = parseInt(newStock);
+
+localStorage.setItem("products", JSON.stringify(products));
+
+alert("Product updated successfully 👑");
+
+location.reload();
+
+}
+
+}
 calculateSales();
 loadStock();
 loadOrders();
 loadProductsAdmin();
 </script>
+<!-- FIREBASE CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyA4qDZrVYdexL9nediR-Ao0HPJhB9vpq6Y",
+authDomain: "queen-christine-delights-946a4.firebaseapp.com",
+projectId: "queen-christine-delights-946a4",
+storageBucket: "queen-christine-delights-946a4.firebasestorage.app",
+messagingSenderId: "852015152708",
+appId: "1:852015152708:web:1f523cabb4a0f22a140611"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+</script>
 </body>
 </html>
