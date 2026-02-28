@@ -361,16 +361,20 @@ cart.push({name,price,qty});
 updateCart();
 
 }
-function addToCart(button){
-const item=button.closest('.menu-item');
-const name=item.querySelector('h3').innerText;
-const price=parseInt(item.querySelector('.price').innerText);
-const qty=parseInt(item.querySelector('.qty').value);
-if(qty<=0){alert("Select quantity"); return;}
-const existing=cart.find(p=>p.name===name);
-if(existing){existing.qty+=qty;}else{cart.push({name,price,qty});}
-item.querySelector('.qty').value=1;
-updateCart();
+function addToCart(name,price,qty){
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+cart.push({
+name:name,
+price:price,
+qty:qty
+});
+
+localStorage.setItem("cart",JSON.stringify(cart));
+
+alert("Added to cart");
+
 }
 function addIcePopToCart(button){
 
@@ -543,7 +547,7 @@ let products = JSON.parse(localStorage.getItem("products")) || [];
 
 let menu = document.querySelector(".menu");
 
-products.forEach(product=>{
+products.forEach((product,index)=>{
 
 let card = document.createElement("div");
 
@@ -555,11 +559,16 @@ card.innerHTML = `
 
 <h3>${product.name}</h3>
 
-<p>KSh <span class="price">${product.price}</span></p>
+<select class="typeSelect">
+<option value="${product.retailPrice}">Retail (KSh ${product.retailPrice})</option>
+<option value="${product.wholesalePrice}">Wholesale (KSh ${product.wholesalePrice})</option>
+</select>
 
 <input type="number" class="qty" value="1" min="1">
 
-<button class="order-btn" onclick="addToCart(this)">Add to Cart</button>
+<button class="order-btn" onclick="addDynamicProductToCart(this,'${product.name}')">
+Add to Cart
+</button>
 
 `;
 
@@ -568,10 +577,95 @@ menu.appendChild(card);
 });
 
 }
-
 loadProducts();
 
-</script>
+function chooseCategory(index){
 
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let product = products[index];
+
+let choice = prompt(
+"Choose Purchase Type:\n\n1️⃣ Retail (Single)\n2️⃣ Wholesale (Carton)"
+);
+
+if(choice == "1"){
+
+let qty = prompt("Enter quantity:");
+
+addToCart(product.name, product.retailPrice, qty);
+
+}
+
+else if(choice == "2"){
+
+let qty = prompt("Enter number of cartons:");
+
+addToCart(product.name + " (Carton)", product.wholesalePrice, qty);
+
+}
+
+else{
+
+alert("Invalid selection");
+
+}
+
+}
+function addDynamicProductToCart(button,name){
+
+const item = button.closest('.menu-item');
+
+const price = parseInt(item.querySelector('.typeSelect').value);
+
+const qty = parseInt(item.querySelector('.qty').value);
+
+const existing = cart.find(p=>p.name===name && p.price===price);
+
+if(existing){
+existing.qty += qty;
+}else{
+cart.push({name:name,price:price,qty:qty});
+}
+
+updateCart();
+
+}
+</script>
+<!-- FIREBASE CDN -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyA4qDZrVYdexL9nediR-Ao0HPJhB9vpq6Y",
+authDomain: "queen-christine-delights-946a4.firebaseapp.com",
+projectId: "queen-christine-delights-946a4",
+storageBucket: "queen-christine-delights-946a4.firebasestorage.app",
+messagingSenderId: "852015152708",
+appId: "1:852015152708:web:1f523cabb4a0f22a140611"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+</script>
+db.collection("products").onSnapshot((snapshot) => {
+
+    const productList = document.getElementById("productList");
+    productList.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+        const data = doc.data();
+
+        productList.innerHTML += `
+        <div class="product">
+            <h3>${data.name}</h3>
+            <p>Retail: ${data.retail}</p>
+            <p>Wholesale: ${data.wholesale}</p>
+        </div>
+        `;
+    });
+
+});
 </body>
 </html>
